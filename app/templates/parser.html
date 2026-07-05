@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Парсинг{% endblock %}
+{% set active = 'parser' %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Парсинг</h1>
+    <div class="sub">Сбор объектов с eri2.nca.by и au.nca.by · антипарсинг-профиль: <b>{{ active }}</b></div>
+  </div>
+</div>
+
+<div class="grid cols-2">
+  <div class="card">
+    <div class="section-title">Запуск</div>
+    <div class="form-row">
+      <label>Источник</label>
+      <select id="run-source">
+        <option value="all">Все активные</option>
+        {% for key, src in sources.items() if src.enabled %}
+        <option value="{{ key }}">{{ src.label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Профиль агрессивности</label>
+      <select id="run-profile">
+        {% for key, p in profiles.items() %}
+        <option value="{{ key }}" {{ 'selected' if key == active }}>{{ p.label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="toggle"><input type="checkbox" id="run-dry"> Тестовый режим (мок-данные, без сети)</label>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="btn-start">Начать парсинг</button>
+      <button class="btn danger" id="btn-stop" disabled>Остановить</button>
+      <span class="spacer"></span>
+      <a class="btn sm" href="/api/parse/logfile" target="_blank">Открыть лог-файл</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Прогресс</div>
+    <div class="row" style="justify-content:space-between">
+      <span class="muted" id="phase">ожидание</span>
+      <span class="muted"><span id="processed">0</span> / <span id="total">0</span></span>
+    </div>
+    <div class="progress" style="margin:12px 0"><div id="bar" style="width:0%"></div></div>
+    <div class="grid cols-4" style="margin-top:14px">
+      <div class="stat"><div class="label">Новых</div><div class="value" id="s-new">0</div></div>
+      <div class="stat"><div class="label">Обновлено</div><div class="value" id="s-upd">0</div></div>
+      <div class="stat"><div class="label">Фото</div><div class="value" id="s-photo">0</div></div>
+      <div class="stat"><div class="label">Ошибок</div><div class="value" id="s-err">0</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="section-title">Журнал</div>
+  <div class="log-view" id="logView"></div>
+</div>
+
+<div class="card">
+  <div class="section-title">Последние запуски</div>
+  {% if last_runs %}
+  <table class="tbl">
+    <tr><th>Дата</th><th>Профиль</th><th>Источник</th><th>Статус</th><th>Найдено</th><th>Новых</th><th>Фото</th><th>Ошибок</th></tr>
+    {% for r in last_runs %}
+    <tr>
+      <td>{{ r.started_at.strftime('%d.%m %H:%M') if r.started_at else '—' }}</td>
+      <td>{{ r.profile }}</td>
+      <td>{{ r.source_filter }}</td>
+      <td>{{ r.status }}</td>
+      <td>{{ r.objects_found }}</td><td>{{ r.objects_new }}</td><td>{{ r.photos_downloaded }}</td><td>{{ r.errors }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<div class="empty">Запусков не было.</div>{% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/parser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Настройки{% endblock %}
+{% set active = 'settings' %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Настройки</h1>
+    <div class="sub">Параметры приложения, интерфейса, парсинга и визуализации</div>
+  </div>
+  <button class="btn primary" id="btn-save">Сохранить</button>
+</div>
+
+<div id="flash"></div>
+
+<div class="grid cols-2">
+  <div class="card">
+    <div class="section-title">Интерфейс</div>
+    <div class="form-row">
+      <label>Тема</label>
+      <select data-cfg="app.theme"><option value="dark">Тёмная (по умолчанию)</option><option value="light">Светлая</option></select>
+    </div>
+    <div class="form-row">
+      <label>Язык</label>
+      <select data-cfg="app.language"><option value="ru">Русский</option><option value="en">English</option></select>
+    </div>
+    <div class="form-row">
+      <label>Объектов на странице</label>
+      <input type="number" data-cfg="app.items_per_page" min="6" max="120">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Подключение к БД</div>
+    <div class="form-row"><label>Хост</label><input data-cfg="db.host"></div>
+    <div class="form-row"><label>Порт</label><input type="number" data-cfg="db.port"></div>
+    <div class="form-row"><label>Имя БД</label><input data-cfg="db.name"></div>
+    <div class="form-row"><label>Пользователь</label><input data-cfg="db.user"></div>
+    <div class="form-row"><label>Пароль</label><input type="password" data-cfg="db.password"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Парсинг — общее</div>
+    <div class="form-row">
+      <label>Активный профиль</label>
+      <select data-cfg="parser.active_profile">
+        {% for key, p in full.parser.profiles.items() %}<option value="{{ key }}">{{ p.label }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="toggle"><input type="checkbox" data-cfg="parser.download_photos"> Скачивать оригиналы фото</label>
+    </div>
+    <div class="form-row">
+      <label class="toggle"><input type="checkbox" data-cfg="parser.dry_run"> Тестовый режим по умолчанию</label>
+    </div>
+    <div class="form-row">
+      <label>Папка для фото</label><input data-cfg="parser.photo_dir">
+    </div>
+    <div class="form-row">
+      <label>Лимит объектов за запуск (0 = без лимита)</label>
+      <input type="number" data-cfg="parser.max_objects_per_run" min="0">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Парсинг — прокси</div>
+    <div class="form-row">
+      <label class="toggle"><input type="checkbox" data-cfg="parser.proxy.enabled"> Использовать прокси</label>
+    </div>
+    <div class="form-row"><label>Сервер (http://host:port или socks5://host:port)</label><input data-cfg="parser.proxy.server"></div>
+    <div class="form-row"><label>Логин</label><input data-cfg="parser.proxy.username"></div>
+    <div class="form-row"><label>Пароль</label><input type="password" data-cfg="parser.proxy.password"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Парсинг — источники</div>
+    {% for key, src in full.parser.sources.items() %}
+    <div class="form-row">
+      <label class="toggle"><input type="checkbox" data-cfg="parser.sources.{{ key }}.enabled"> {{ src.label }}</label>
+    </div>
+    <div class="form-row"><label>URL</label><input data-cfg="parser.sources.{{ key }}.base_url"></div>
+    <div class="form-row"><label>Цвет маркера</label><input type="color" data-cfg="parser.sources.{{ key }}.marker_color"></div>
+    {% if not loop.last %}<hr style="border:none;border-top:1px solid var(--border);margin:6px 0">{% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <div class="section-title">Визуализация — карта</div>
+    <div class="form-row"><label>Широта по умолчанию</label><input type="number" step="0.0001" data-cfg="map.default_lat"></div>
+    <div class="form-row"><label>Долгота по умолчанию</label><input type="number" step="0.0001" data-cfg="map.default_lng"></div>
+    <div class="form-row"><label>Зум по умолчанию</label><input type="number" min="4" max="18" data-cfg="map.default_zoom"></div>
+    <div class="form-row"><label>Радиус кластеризации</label><input type="number" min="0" max="200" data-cfg="map.max_cluster_radius"></div>
+    <div class="form-row"><label>URL тайлов</label><input data-cfg="map.tile_url"></div>
+    <div class="form-row"><label>Атрибуция тайлов</label><input data-cfg="map.tile_attribution"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>window.HATA_CONFIG = {{ full|tojson|safe }};</script>
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,121 @@
+{
+  "app": {
+    "host": "0.0.0.0",
+    "port": 5000,
+    "debug": false,
+    "theme": "dark",
+    "language": "ru",
+    "items_per_page": 24
+  },
+  "db": {
+    "host": "localhost",
+    "port": 5432,
+    "name": "hata",
+    "user": "hata",
+    "password": "hata"
+  },
+  "parser": {
+    "active_profile": "balanced",
+    "profiles": {
+      "gentle": {
+        "label": "Осторожный (раз в неделю)",
+        "delay_min_seconds": 8,
+        "delay_max_seconds": 20,
+        "per_hour_limit": 200,
+        "batch_size": 10,
+        "batch_pause_seconds": 90,
+        "request_timeout_seconds": 30,
+        "retry_attempts": 2,
+        "backoff_base_seconds": 15,
+        "concurrency": 1,
+        "photo_concurrency": 2,
+        "photo_batch_pause_seconds": 40
+      },
+      "balanced": {
+        "label": "Сбалансированный (раз в день)",
+        "delay_min_seconds": 4,
+        "delay_max_seconds": 10,
+        "per_hour_limit": 400,
+        "batch_size": 20,
+        "batch_pause_seconds": 45,
+        "request_timeout_seconds": 25,
+        "retry_attempts": 3,
+        "backoff_base_seconds": 10,
+        "concurrency": 1,
+        "photo_concurrency": 3,
+        "photo_batch_pause_seconds": 25
+      },
+      "hourly": {
+        "label": "Ежечасный (раз в час)",
+        "delay_min_seconds": 2,
+        "delay_max_seconds": 6,
+        "per_hour_limit": 800,
+        "batch_size": 40,
+        "batch_pause_seconds": 20,
+        "request_timeout_seconds": 20,
+        "retry_attempts": 3,
+        "backoff_base_seconds": 6,
+        "concurrency": 2,
+        "photo_concurrency": 4,
+        "photo_batch_pause_seconds": 12
+      },
+      "fast": {
+        "label": "Быстрый (раз в полчаса)",
+        "delay_min_seconds": 1,
+        "delay_max_seconds": 4,
+        "per_hour_limit": 1500,
+        "batch_size": 60,
+        "batch_pause_seconds": 10,
+        "request_timeout_seconds": 18,
+        "retry_attempts": 2,
+        "backoff_base_seconds": 4,
+        "concurrency": 3,
+        "photo_concurrency": 5,
+        "photo_batch_pause_seconds": 8
+      }
+    },
+    "user_agents": [
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0"
+    ],
+    "proxy": {
+      "enabled": false,
+      "server": "",
+      "username": "",
+      "password": ""
+    },
+    "sources": {
+      "abandoned": {
+        "enabled": true,
+        "label": "Пустующие дома",
+        "base_url": "https://eri2.nca.by",
+        "list_path": "/guest/abandonedObject",
+        "marker_color": "#2563eb",
+        "object_type": "abandoned"
+      },
+      "commercial": {
+        "enabled": true,
+        "label": "Коммерческая недвижимость",
+        "base_url": "https://au.nca.by",
+        "list_path": "/",
+        "marker_color": "#ea580c",
+        "object_type": "commercial"
+      }
+    },
+    "download_photos": true,
+    "photo_dir": "data/photos",
+    "dry_run": false,
+    "max_objects_per_run": 0
+  },
+  "map": {
+    "default_lat": 53.9,
+    "default_lng": 27.5667,
+    "default_zoom": 7,
+    "tile_url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    "tile_attribution": "&copy; OpenStreetMap contributors",
+    "max_cluster_radius": 50,
+    "marker_pin_radius": 9
+  }
+}

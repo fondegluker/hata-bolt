@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Карта{% endblock %}
+{% set active = 'map' %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Карта объектов</h1>
+    <div class="sub">{{ sources|length }} активных источников · кликните маркер для деталей</div>
+  </div>
+</div>
+
+<div style="position:relative">
+  <div id="map"></div>
+  <div class="map-controls">
+    <div class="card">
+      <div class="section-title" style="margin:0 0 10px">Фильтры</div>
+      <div class="filter-row">
+        <label class="toggle"><input type="checkbox" id="f-abandoned" checked> Пустующие дома</label>
+        <i style="width:10px;height:10px;border-radius:50%;background:var(--marker-abandoned)"></i>
+      </div>
+      <div class="filter-row">
+        <label class="toggle"><input type="checkbox" id="f-commercial" checked> Коммерческая</label>
+        <i style="width:10px;height:10px;border-radius:50%;background:var(--marker-commercial)"></i>
+      </div>
+      <div class="filter-row" style="margin-top:10px">
+        <select id="f-region"><option value="">Все регионы</option>{% for r in regions %}<option value="{{ r.region }}">{{ r.region }} ({{ r.cnt }})</option>{% endfor %}</select>
+      </div>
+      <div class="filter-row">
+        <select id="f-sale"><option value="">Любая продажа</option><option value="auction">Аукцион</option><option value="direct">Напрямую</option></select>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>window.HATA_MAP = {{ map_cfg|tojson|safe }};</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+{% endblock %}

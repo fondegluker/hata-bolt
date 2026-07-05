@@ -1,0 +1,5 @@
+Flask>=3.0.3
+psycopg2-binary>=2.9.10
+playwright>=1.49
+python-dotenv>=1.0.1
+Pillow>=10.4.0

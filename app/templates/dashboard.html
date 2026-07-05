@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Обзор{% endblock %}
+{% set active = 'dashboard' %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Обзор</h1>
+    <div class="sub">Состояние базы данных и последние запуски парсинга</div>
+  </div>
+  <a class="btn primary" href="{{ url_for('pages.parser_page') }}">Запустить парсинг</a>
+</div>
+
+<div class="grid cols-4">
+  <div class="card stat"><div class="label">Объектов в БД</div><div class="value">{{ stats.houses }}</div><div class="hint">всего сохранено</div></div>
+  <div class="card stat"><div class="label">С координатами</div><div class="value">{{ stats.geocoded }}</div><div class="hint">отображается на карте</div></div>
+  <div class="card stat"><div class="label">Фотографий</div><div class="value">{{ stats.photos_done }}</div><div class="hint">из {{ stats.photos }} известных</div></div>
+  <div class="card stat"><div class="label">Запусков парсинга</div><div class="value">{{ stats.recent_runs|length }}</div><div class="hint">недавних</div></div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <div class="section-title">По типам объектов</div>
+  {% if stats.by_type %}
+  <div class="chips">
+    {% for t in stats.by_type %}
+      <span class="chip" style="border-color:{{ t.marker_color }}">
+        <i style="width:9px;height:9px;border-radius:50%;background:{{ t.marker_color }};display:inline-block;margin-right:7px"></i>
+        {{ t.label }} — {{ t.cnt }}
+      </span>
+    {% endfor %}
+  </div>
+  {% else %}<div class="empty">Данных пока нет. Запустите парсинг.</div>{% endif %}
+</div>
+
+<div class="card">
+  <div class="section-title">По способу продажи</div>
+  {% if stats.by_method %}
+  <table class="tbl">
+    <tr><th>Способ</th><th>Количество</th></tr>
+    {% for m in stats.by_method %}
+    <tr><td>{{ {'auction':'Аукцион','direct':'Напрямую'}.get(m.sale_method, m.sale_method or '—') }}</td><td>{{ m.cnt }}</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<div class="empty">Нет данных.</div>{% endif %}
+</div>
+
+<div class="card">
+  <div class="section-title">Последние запуски</div>
+  {% if stats.recent_runs %}
+  <table class="tbl">
+    <tr><th>Дата</th><th>Профиль</th><th>Источник</th><th>Статус</th><th>Найдено</th><th>Новых</th><th>Ошибок</th></tr>
+    {% for r in stats.recent_runs %}
+    <tr>
+      <td>{{ r.started_at.strftime('%d.%m %H:%M') if r.started_at else '—' }}</td>
+      <td>{{ r.profile }}</td>
+      <td>{{ r.source_filter }}</td>
+      <td>{{ {'running':'идёт','completed':'готово','stopped':'остановлен','error':'ошибка'}.get(r.status, r.status) }}</td>
+      <td>{{ r.objects_found }}</td>
+      <td>{{ r.objects_new }}</td>
+      <td>{{ r.errors }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<div class="empty">Запусков не было.</div>{% endif %}
+</div>
+{% endblock %}

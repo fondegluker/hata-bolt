@@ -1,0 +1,10 @@
+{
+  "name": "hata",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hata — Flask app for parsing eri2.nca.by / au.nca.by real estate and showing it on a Leaflet map",
+  "scripts": {
+    "build": "python3 -m compileall -q app run.py && python3 -c \"import sys; sys.path.insert(0,'.'); from app import create_app, config, db, houses, pages; from app.api import views; from app.parser import runtime, engine; print('build OK: all modules import')\"",
+    "start": "python3 run.py"
+  }
+}
